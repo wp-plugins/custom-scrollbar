@@ -1,10 +1,10 @@
 === Custom Scrollbar ===
 Contributors:       Michael Uno, miunosoft
 Donate link:        http://en.michaeluno.jp/donate
-Tags:               scroll, scrollbar, scroll bar, appearance, custom scrollbar, custom scroll, custom scroll bar 
+Tags:               scroll, scrollbar, scrollbars, scroll bar, scroll bars, appearance, custom scrollbar, custom scrollbars, custom scroll, custom scroll bar, custom scroll bars
 Requires at least:  3.3
-Tested up to:       4.2.2
-Stable tag:         1
+Tested up to:       4.3.1
+Stable tag:         1.1.0
 License:            GPLv2 or later
 License URI:        http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -47,7 +47,11 @@ Notes: you need a basic understanding of CSS (jQuery) selectors to use this plug
 
 == Changelog ==
 
-= 1.1 =
+= 1.1.1 - 10/20/2015 = 
+- Tweaked the setting pages.
+- Updated the [Admin Page Framework](https://wordpress.org/plugins/admin-page-framework/) library.
+
+= 1.1 - 08/29/2015 =
 - Added the ability to set inline CSS rules wit the `Inline CSS` option.
 - Tweaked the styling of setting forms.
 - Fixed a bug that the `Width` option did not take effect.
