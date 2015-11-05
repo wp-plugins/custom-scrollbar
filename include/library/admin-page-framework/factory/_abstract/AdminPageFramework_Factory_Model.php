@@ -10,6 +10,9 @@ abstract class CustomScrollbar_AdminPageFramework_Factory_Model extends CustomSc
         }
         $this->oProp->aFieldTypeDefinitions = $this->oUtil->addAndApplyFilters($this, array('field_types_admin_page_framework', "field_types_{$this->oProp->sClassName}",), self::$_aFieldTypeDefinitions);
     }
+    public function loadFieldTypeDefinitions() {
+        $this->_loadFieldTypeDefinitions();
+    }
     protected function _registerFields(array $aFields) {
         foreach ($aFields as $_sSecitonID => $_aFields) {
             $_bIsSubSectionLoaded = false;
@@ -34,9 +37,16 @@ abstract class CustomScrollbar_AdminPageFramework_Factory_Model extends CustomSc
         if ($aField['help']) {
             $this->oHelpPane->_addHelpTextForFormFields($aField['title'], $aField['help'], $aField['help_aside']);
         }
-        if (isset($this->oProp->aFieldTypeDefinitions[$aField['type']]['hfDoOnRegistration']) && is_callable($this->oProp->aFieldTypeDefinitions[$aField['type']]['hfDoOnRegistration'])) {
-            call_user_func_array($this->oProp->aFieldTypeDefinitions[$aField['type']]['hfDoOnRegistration'], array($aField));
+        $_oCallableDoOnRegistration = $this->oUtil->getElement($this->oProp->aFieldTypeDefinitions, array($aField['type'], 'hfDoOnRegistration'));
+        if (is_callable($_oCallableDoOnRegistration)) {
+            call_user_func_array($_oCallableDoOnRegistration, array($aField));
         }
+    }
+    public function registerFields(array $aFields) {
+        $this->_registerFields($aFields);
+    }
+    public function registerField(array $aField) {
+        $this->_registerField($aField);
     }
     public function getSavedOptions() {
         return $this->oProp->aOptions;
@@ -44,7 +54,7 @@ abstract class CustomScrollbar_AdminPageFramework_Factory_Model extends CustomSc
     public function getFieldErrors() {
         return $this->_getFieldErrors();
     }
-    protected function _getFieldErrors($sID = 'deprecated', $bDelete = true) {
+    public function _getFieldErrors($sID = 'deprecated', $bDelete = true) {
         static $_aFieldErrors;
         $_sTransientKey = "apf_field_erros_" . get_current_user_id();
         $_sID = md5($this->oProp->sClassName);
@@ -55,10 +65,8 @@ abstract class CustomScrollbar_AdminPageFramework_Factory_Model extends CustomSc
         return $this->oUtil->getElementAsArray($_aFieldErrors, $_sID, array());
     }
     protected function _isValidationErrors() {
-        if (isset($GLOBALS['aCustomScrollbar_AdminPageFramework']['aFieldErrors']) && $GLOBALS['aCustomScrollbar_AdminPageFramework']['aFieldErrors']) {
-            return true;
-        }
-        return $this->oUtil->getTransient("apf_field_erros_" . get_current_user_id());
+        $_aFieldErrors = $this->oUtil->getElement($GLOBALS, array('aCustomScrollbar_AdminPageFramework', 'aFieldErrors'));
+        return !empty($_aFieldErrors) ? $_aFieldErrors : $this->oUtil->getTransient("apf_field_erros_" . get_current_user_id());
     }
     public function _replyToDeleteFieldErrors() {
         $this->oUtil->deleteTransient("apf_field_erros_" . get_current_user_id());
@@ -82,11 +90,14 @@ abstract class CustomScrollbar_AdminPageFramework_Factory_Model extends CustomSc
         return $this->oUtil->setTransient('apf_tfd' . md5('temporary_form_data_' . $this->oProp->sClassName . get_current_user_id()), $aLastInput, 60 * 60);
     }
     protected function _getSortedInputs(array $aInput) {
-        $_sFieldAddressKey = '__dynamic_elements_' . $this->oProp->sFieldsType;
-        if (!isset($_POST[$_sFieldAddressKey])) {
+        $_aDynamicFieldAddressKeys = array_unique(array_merge($this->oUtil->getElementAsArray($_POST, '__repeatable_elements_' . $this->oProp->sFieldsType, array()), $this->oUtil->getElementAsArray($_POST, '__sortable_elements_' . $this->oProp->sFieldsType, array())));
+        if (empty($_aDynamicFieldAddressKeys)) {
             return $aInput;
         }
-        $_oInputSorter = new CustomScrollbar_AdminPageFramework_Sort_Input($aInput, $_POST[$_sFieldAddressKey]);
+        $_oInputSorter = new CustomScrollbar_AdminPageFramework_Modifier_SortInput($aInput, $_aDynamicFieldAddressKeys);
         return $_oInputSorter->get();
+    }
+    public function getSortedInputs(array $aInput) {
+        return $this->_getSortedInputs($aInput);
     }
 }

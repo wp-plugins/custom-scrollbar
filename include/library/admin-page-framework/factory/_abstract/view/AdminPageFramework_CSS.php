@@ -435,12 +435,18 @@ tbody.custom-scrollbar-collapsible-content.table-caption {
     display: table; /* if block, it gets hidden inside the section toggle bar */
 }
 .custom-scrollbar-collapsible-toggle-all-button.button {
-
     height: 36px;
     line-height: 34px;
     padding: 0 16px 6px;    
     font-size: 20px;    /* Determines the dashicon size  */
     width: auto;
+}
+/* Vertically flip the toggle button */
+.flipped > .custom-scrollbar-collapsible-toggle-all-button.button.dashicons {
+    -moz-transform: scaleY(-1);
+    -webkit-transform: scaleY(-1);
+    transform: scaleY(-1);
+    filter: flipv; /*IE*/
 }
 
 /* Repeatable Section buttons inside the collapsible section title block */
@@ -520,10 +526,10 @@ CSSRULES;
 }
 
 /* Post Metabox Section Heading Info */
-#poststuff .metabox-holder .custom-scrollbar-section-title h3 {
+#poststuff .metabox-holder .postbox-container .custom-scrollbar-section-title h3 {
     border: none;
     font-weight: bold;
-    font-size: 1.2em;
+    font-size: 1.12em;
     margin: 1em 0;
     padding: 0;
     font-family: 'Open Sans', sans-serif;     
@@ -538,6 +544,17 @@ CSSRULES;
     box-shadow: none;
     background: none;
 }      
+#poststuff .metabox-holder .postbox-container .custom-scrollbar-collapsible-title h3 {
+    margin: 0;
+}
+#poststuff .metabox-holder .postbox-container h4 {
+    margin: 1em 0;
+    font-size: 1.04em;
+}
+#poststuff .metabox-holder .postbox-container .custom-scrollbar-section-tab h4 {
+    margin: 0;
+}
+
 /* Side meta boxes */
 @media screen and (min-width: 783px) {    
     /* Fix that the text input fields stick out the meta-box container */
